@@ -2,8 +2,6 @@
 import Layout from '../../layouts/Layout.astro';
 import path from 'path';
 
-import { mediumarticles } from '../m/[...slug].astro';
-
 interface PostData {
   slug: string;
   title?: string;
@@ -24,18 +22,8 @@ const postData: PostData[] = posts.map((post): PostData => {
   };
 });
 
-const mediumPosts: PostData[] = mediumarticles.map(article => ({
-  slug: `m/${article.slug}`,
-  title: article.title,
-  description: article.description || '',
-  date: article.date,
-  redirect: article.redirect,
-  tags: article.tags
-}));
 
-const allPosts = [...postData, ...mediumPosts];
-
-const sortedPosts = allPosts.sort((a, b) => {
+const sortedPosts = postData.sort((a, b) => {
   const dateA = new Date(a.date || '1970-01-01').getTime();
   const dateB = new Date(b.date || '1970-01-01').getTime();
   return dateB - dateA;
@@ -54,18 +42,15 @@ const sortedPosts = allPosts.sort((a, b) => {
   <div class="mb-6">
     <div class="flex flex-wrap gap-2">
       <button class="tag-filter px-3 py-1 border cursor-pointer dark:hover:text-gruvbox-dark-bg dark:hover:bg-gruvbox-dark-accent hover:text-gruvbox-light-bg border-gruvbox-light-accent dark:border-gruvbox-dark-accent hover:bg-gruvbox-light-accent transition-colors" data-tag="">All</button>
-      <button class="tag-filter px-3 py-1 border cursor-pointer dark:hover:text-gruvbox-dark-bg dark:hover:bg-gruvbox-dark-accent hover:text-gruvbox-light-bg border-gruvbox-light-accent dark:border-gruvbox-dark-accent hover:bg-gruvbox-light-accent transition-colors" data-tag="medium">Medium</button>
-      <button class="tag-filter px-3 py-1 border cursor-pointer dark:hover:text-gruvbox-dark-bg dark:hover:bg-gruvbox-dark-accent hover:text-gruvbox-light-bg border-gruvbox-light-accent dark:border-gruvbox-dark-accent hover:bg-gruvbox-light-accent transition-colors" data-tag="ai">AI</button>
-      <button class="tag-filter px-3 py-1 border cursor-pointer dark:hover:text-gruvbox-dark-bg dark:hover:bg-gruvbox-dark-accent hover:text-gruvbox-light-bg border-gruvbox-light-accent dark:border-gruvbox-dark-accent hover:bg-gruvbox-light-accent transition-colors" data-tag="ml">ML</button>
-      <button class="tag-filter px-3 py-1 border cursor-pointer dark:hover:text-gruvbox-dark-bg dark:hover:bg-gruvbox-dark-accent hover:text-gruvbox-light-bg border-gruvbox-light-accent dark:border-gruvbox-dark-accent hover:bg-gruvbox-light-accent transition-colors" data-tag="model-review">Model Review</button>
-      <button class="tag-filter px-3 py-1 border cursor-pointer dark:hover:text-gruvbox-dark-bg dark:hover:bg-gruvbox-dark-accent hover:text-gruvbox-light-bg border-gruvbox-light-accent dark:border-gruvbox-dark-accent hover:bg-gruvbox-light-accent transition-colors" data-tag="dl">Deep Learning</button>
-      <button class="tag-filter px-3 py-1 border cursor-pointer dark:hover:text-gruvbox-dark-bg dark:hover:bg-gruvbox-dark-accent hover:text-gruvbox-light-bg border-gruvbox-light-accent dark:border-gruvbox-dark-accent hover:bg-gruvbox-light-accent transition-colors" data-tag="architecture">Architecture</button>
+      <button class="tag-filter px-3 py-1 border cursor-pointer dark:hover:text-gruvbox-dark-bg dark:hover:bg-gruvbox-dark-accent hover:text-gruvbox-light-bg border-gruvbox-light-accent dark:border-gruvbox-dark-accent hover:bg-gruvbox-light-accent transition-colors" data-tag="math">Math</button>
+      <button class="tag-filter px-3 py-1 border cursor-pointer dark:hover:text-gruvbox-dark-bg dark:hover:bg-gruvbox-dark-accent hover:text-gruvbox-light-bg border-gruvbox-light-accent dark:border-gruvbox-dark-accent hover:bg-gruvbox-light-accent transition-colors" data-tag="tutorial">Tutorial</button>
+      <button class="tag-filter px-3 py-1 border cursor-pointer dark:hover:text-gruvbox-dark-bg dark:hover:bg-gruvbox-dark-accent hover:text-gruvbox-light-bg border-gruvbox-light-accent dark:border-gruvbox-dark-accent hover:bg-gruvbox-light-accent transition-colors" data-tag="poems">Poetry</button>
     </div>
   </div>
   
   <div id="postsContainer" class="posts-list flex flex-wrap w-full">
     {sortedPosts.map((post) => (
-      <a href={ post.tags.includes("medium") ? `/${post.slug}` : `/posts/${post.slug}`} class="post-item w-full dark:hover:text-gruvbox-dark-bg hover:text-gruvbox-light-bg md:w-1/2 dark:hover:bg-gruvbox-dark-accent hover:bg-gruvbox-light-accent p-4" data-title={post.title} data-description={post.description} data-tags={post.tags?.join(' ')}>
+      <a href={ `/posts/${post.slug}`} class="post-item w-full dark:hover:text-gruvbox-dark-bg hover:text-gruvbox-light-bg md:w-1/2 dark:hover:bg-gruvbox-dark-accent hover:bg-gruvbox-light-accent p-4" data-title={post.title} data-description={post.description} data-tags={post.tags?.join(' ')}>
         <h2>{post.title}</h2>
         <time>{post.date}</time>
         {post.description && <p class="mt-2 text-sm break-keep">{post.description}</p>}
@@ -100,7 +85,6 @@ const sortedPosts = allPosts.sort((a, b) => {
       });
     }
     
-    // Search input event
     searchInput.addEventListener('input', filterPosts);
     
     tagFilters.forEach(button => {
@@ -120,7 +104,6 @@ const sortedPosts = allPosts.sort((a, b) => {
       });
     });
     
-    // Set "All" as default active
     tagFilters[0].classList.add('bg-gruvbox-light-accent');
     tagFilters[0].classList.add('text-gruvbox-light-bg');
     tagFilters[0].classList.add('dark:bg-gruvbox-dark-accent');
